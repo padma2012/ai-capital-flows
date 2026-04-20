@@ -1,8 +1,13 @@
 import type { Express } from "express";
 import type { Server } from "http";
-import { storage } from "./storage";
+import { storage, pendingStorage } from "./storage";
 import { runPipeline } from "./pipeline";
 import { insertDealSchema } from "@shared/schema";
+import { Resend } from "resend";
+import { randomBytes } from "crypto";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+const ADMIN_EMAIL = "savjanipriyanka@gmail.com";
 
 export function registerRoutes(httpServer: Server, app: Express) {
   // GET /api/deals — list with optional filters
@@ -89,31 +94,102 @@ export function registerRoutes(httpServer: Server, app: Express) {
     res.status(201).json(deal);
   });
 
-  // Public deal submission — queued for review (stored with pending flag)
-  app.post("/api/deals/submit", (req, res) => {
+  // Public deal submission — held for approval, email sent to admin
+  app.post("/api/deals/submit", async (req, res) => {
     const { company, amount, stage, sector, lead, region, location, description, source, submitterEmail } = req.body;
     if (!company || !amount || !stage) {
       return res.status(400).json({ error: "company, amount and stage are required" });
     }
-    // Parse amount — accept "25M", "25000000", "$25M" etc.
     const raw = String(amount).replace(/[^0-9.]/g, "");
     const multiplier = /[Bb]/.test(String(amount)) ? 1000 : 1;
-    const parsed = parseFloat(raw) * multiplier;
-    if (isNaN(parsed) || parsed <= 0) return res.status(400).json({ error: "Invalid amount" });
-    // Store deal — mark source as user submission for review
-    const deal = storage.insertDeal({
+    const parsedAmount = parseFloat(raw) * multiplier;
+    if (isNaN(parsedAmount) || parsedAmount <= 0) return res.status(400).json({ error: "Invalid amount" });
+
+    const token = randomBytes(32).toString("hex");
+    const baseUrl = process.env.BASE_URL || `https://ai-capital-flows-production.up.railway.app`;
+
+    pendingStorage.insert({
       company: String(company).trim(),
-      amount: parsed,
+      amount: parsedAmount,
       stage: String(stage),
       sector: String(sector || "Enterprise AI"),
       lead: String(lead || "Undisclosed"),
       region: String(region || "North America"),
       location: String(location || ""),
       description: String(description || ""),
-      source: String(source || `Submitted by: ${submitterEmail || "anonymous"}`),
+      source: String(source || ""),
+      submitterEmail: String(submitterEmail || ""),
+      token,
+    });
+
+    const approveUrl = `${baseUrl}/api/deals/approve?token=${token}`;
+    const rejectUrl = `${baseUrl}/api/deals/reject?token=${token}`;
+    const amountStr = parsedAmount >= 1000 ? `$${(parsedAmount/1000).toFixed(1)}B` : `$${parsedAmount}M`;
+
+    await resend.emails.send({
+      from: "AI Capital Flows <onboarding@resend.dev>",
+      to: ADMIN_EMAIL,
+      subject: `New deal submission: ${company} (${amountStr} ${stage})`,
+      html: `
+        <div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:24px">
+          <h2 style="margin:0 0 4px">New Deal Submission</h2>
+          <p style="color:#888;margin:0 0 24px">Submitted via AI Capital Flows — awaiting your approval</p>
+          <table style="width:100%;border-collapse:collapse;font-size:14px">
+            <tr><td style="padding:8px 0;color:#888;width:140px">Company</td><td style="padding:8px 0;font-weight:600">${company}</td></tr>
+            <tr><td style="padding:8px 0;color:#888">Amount</td><td style="padding:8px 0">${amountStr}</td></tr>
+            <tr><td style="padding:8px 0;color:#888">Stage</td><td style="padding:8px 0">${stage}</td></tr>
+            <tr><td style="padding:8px 0;color:#888">Sector</td><td style="padding:8px 0">${sector || "—"}</td></tr>
+            <tr><td style="padding:8px 0;color:#888">Lead Investor</td><td style="padding:8px 0">${lead || "—"}</td></tr>
+            <tr><td style="padding:8px 0;color:#888">Region</td><td style="padding:8px 0">${region || "—"}</td></tr>
+            <tr><td style="padding:8px 0;color:#888">Location</td><td style="padding:8px 0">${location || "—"}</td></tr>
+            <tr><td style="padding:8px 0;color:#888">Description</td><td style="padding:8px 0">${description || "—"}</td></tr>
+            <tr><td style="padding:8px 0;color:#888">Source URL</td><td style="padding:8px 0">${source ? `<a href="${source}">${source}</a>` : "—"}</td></tr>
+            <tr><td style="padding:8px 0;color:#888">Submitter</td><td style="padding:8px 0">${submitterEmail || "Anonymous"}</td></tr>
+          </table>
+          <div style="margin-top:32px;display:flex;gap:12px">
+            <a href="${approveUrl}" style="display:inline-block;padding:12px 28px;background:#10b981;color:#fff;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px">✓ Approve &amp; Publish</a>
+            <a href="${rejectUrl}" style="display:inline-block;padding:12px 28px;background:#ef4444;color:#fff;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px">✗ Reject</a>
+          </div>
+          <p style="margin-top:24px;color:#aaa;font-size:12px">AI Capital Flows · savjanipriyanka@gmail.com</p>
+        </div>
+      `,
+    });
+
+    res.status(201).json({ ok: true });
+  });
+
+  // Approve a pending deal — one-click from email
+  app.get("/api/deals/approve", (req, res) => {
+    const { token } = req.query as { token: string };
+    if (!token) return res.status(400).send("Missing token");
+    const pending = pendingStorage.getByToken(token);
+    if (!pending) return res.status(404).send("Submission not found");
+    if (pending.status !== "pending") return res.send(`<h2>Already ${pending.status}.</h2>`);
+    storage.insertDeal({
+      company: pending.company,
+      amount: pending.amount,
+      stage: pending.stage,
+      sector: pending.sector,
+      lead: pending.lead,
+      region: pending.region ?? undefined,
+      location: pending.location ?? undefined,
+      description: pending.description ?? undefined,
+      source: pending.source ?? undefined,
       date: new Date().toISOString().split("T")[0],
     });
-    res.status(201).json({ ok: true, id: deal.id });
+    pendingStorage.approve(token);
+    res.send(`<html><body style="font-family:sans-serif;max-width:500px;margin:80px auto;text-align:center"><h2 style="color:#10b981">✓ Deal Published</h2><p><strong>${pending.company}</strong> has been added to AI Capital Flows.</p><a href="https://ai-capital-flows-production.up.railway.app" style="color:#10b981">View Dashboard →</a></body></html>`);
+  });
+
+  // Reject a pending deal
+  app.get("/api/deals/reject", (req, res) => {
+    const { token } = req.query as { token: string };
+    if (!token) return res.status(400).send("Missing token");
+    const pending = pendingStorage.getByToken(token);
+    if (!pending) return res.status(404).send("Submission not found");
+    if (pending.status !== "pending") return res.send(`<h2>Already ${pending.status}.</h2>`);
+    pendingStorage.reject(token);
+    res.send(`<html><body style="font-family:sans-serif;max-width:500px;margin:80px auto;text-align:center"><h2 style="color:#ef4444">✗ Deal Rejected</h2><p><strong>${pending.company}</strong> has been rejected and will not appear on the dashboard.</p><a href="https://ai-capital-flows-production.up.railway.app" style="color:#10b981">View Dashboard →</a></body></html>`);
   });
 
   // Vercel Cron endpoint — called daily at 7am UTC

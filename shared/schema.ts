@@ -19,6 +19,25 @@ export const deals = sqliteTable("deals", {
   createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
 });
 
+export const pendingDeals = sqliteTable("pending_deals", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  company: text("company").notNull(),
+  amount: real("amount").notNull(),
+  stage: text("stage").notNull(),
+  sector: text("sector").notNull(),
+  lead: text("lead").notNull(),
+  region: text("region"),
+  location: text("location"),
+  description: text("description"),
+  source: text("source"),
+  submitterEmail: text("submitter_email"),
+  token: text("token").notNull(),          // approve/reject token
+  status: text("status").default("pending"), // pending | approved | rejected
+  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+});
+
+export type PendingDeal = typeof pendingDeals.$inferSelect;
+
 export const pipelineRuns = sqliteTable("pipeline_runs", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   ranAt: integer("ran_at", { mode: "timestamp" }).$defaultFn(() => new Date()),

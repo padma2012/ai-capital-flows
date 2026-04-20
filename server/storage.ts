@@ -1,6 +1,6 @@
 import { drizzle } from "drizzle-orm/better-sqlite3";
 import Database from "better-sqlite3";
-import { deals, pipelineRuns, type Deal, type InsertDeal, type PipelineRun } from "@shared/schema";
+import { deals, pipelineRuns, pendingDeals, type Deal, type InsertDeal, type PipelineRun, type PendingDeal } from "@shared/schema";
 import { desc, eq, gte, lte, and, like, sql } from "drizzle-orm";
 import path from "path";
 
@@ -26,6 +26,22 @@ sqlite.exec(`
     region TEXT,
     description TEXT,
     source TEXT,
+    created_at INTEGER DEFAULT (unixepoch())
+  );
+  CREATE TABLE IF NOT EXISTS pending_deals (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    company TEXT NOT NULL,
+    amount REAL NOT NULL,
+    stage TEXT NOT NULL,
+    sector TEXT NOT NULL,
+    lead TEXT NOT NULL,
+    region TEXT,
+    location TEXT,
+    description TEXT,
+    source TEXT,
+    submitter_email TEXT,
+    token TEXT NOT NULL,
+    status TEXT DEFAULT 'pending',
     created_at INTEGER DEFAULT (unixepoch())
   );
   CREATE TABLE IF NOT EXISTS pipeline_runs (
@@ -100,5 +116,29 @@ export const storage: IStorage = {
 
   getRecentRuns(limit = 10) {
     return db.select().from(pipelineRuns).orderBy(desc(pipelineRuns.ranAt)).limit(limit).all();
+  },
+};
+
+// Pending deal helpers (outside IStorage — admin only)
+export const pendingStorage = {
+  insert(data: Omit<PendingDeal, "id" | "createdAt" | "status">) {
+    sqlite.prepare(`
+      INSERT INTO pending_deals (company, amount, stage, sector, lead, region, location, description, source, submitter_email, token)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(data.company, data.amount, data.stage, data.sector, data.lead, data.region ?? "", data.location ?? "", data.description ?? "", data.source ?? "", data.submitterEmail ?? "", data.token);
+  },
+
+  getByToken(token: string): PendingDeal | undefined {
+    const row = sqlite.prepare("SELECT * FROM pending_deals WHERE token = ?").get(token) as any;
+    if (!row) return undefined;
+    return { ...row, submitterEmail: row.submitter_email, createdAt: new Date(row.created_at * 1000) };
+  },
+
+  approve(token: string) {
+    sqlite.prepare("UPDATE pending_deals SET status = 'approved' WHERE token = ?").run(token);
+  },
+
+  reject(token: string) {
+    sqlite.prepare("UPDATE pending_deals SET status = 'rejected' WHERE token = ?").run(token);
   },
 };
