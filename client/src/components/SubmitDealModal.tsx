@@ -58,8 +58,7 @@ function SubmitDealModal({ onClose }: { onClose: () => void }) {
     }
   };
 
-  return (
-    {createPortal(
+  return createPortal(
     <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,zIndex:9999,overflowY:"auto",backgroundColor:"rgba(0,0,0,0.7)",backdropFilter:"blur(4px)"}} onClick={onClose}>
       <div style={{margin:"48px auto 48px",maxWidth:"520px",width:"calc(100% - 32px)"}} className="bg-card border border-border rounded-2xl shadow-2xl" onClick={e => e.stopPropagation()}>
         {/* Header */}
@@ -172,6 +171,5 @@ function SubmitDealModal({ onClose }: { onClose: () => void }) {
         )}
       </div>
     </div>
-    , document.body)}  
-  );
+  , document.body);
 }
