@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { PlusCircle, X, CheckCircle } from "lucide-react";
 
 const SECTORS = [
@@ -58,8 +59,9 @@ function SubmitDealModal({ onClose }: { onClose: () => void }) {
   };
 
   return (
-    <div style={{position:"fixed",inset:0,zIndex:9999,overflowY:"auto",background:"rgba(0,0,0,0.6)"}} onClick={onClose}>
-      <div style={{margin:"40px auto",maxWidth:"520px",width:"calc(100% - 32px)",position:"relative"}} className="bg-card border border-border rounded-2xl shadow-2xl" onClick={e => e.stopPropagation()}>
+    {createPortal(
+    <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,zIndex:9999,overflowY:"auto",backgroundColor:"rgba(0,0,0,0.7)",backdropFilter:"blur(4px)"}} onClick={onClose}>
+      <div style={{margin:"48px auto 48px",maxWidth:"520px",width:"calc(100% - 32px)"}} className="bg-card border border-border rounded-2xl shadow-2xl" onClick={e => e.stopPropagation()}>
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-5 border-b border-border">
           <div>
@@ -170,5 +172,6 @@ function SubmitDealModal({ onClose }: { onClose: () => void }) {
         )}
       </div>
     </div>
+    , document.body)}  
   );
 }
