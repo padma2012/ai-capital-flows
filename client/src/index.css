@@ -1,0 +1,99 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap');
+
+:root {
+  /* Nexus palette — dark-first VC dashboard */
+  --background: 35 10% 7%;        /* #111110 charcoal */
+  --foreground: 40 15% 92%;       /* near-white */
+  --card: 35 8% 11%;
+  --card-foreground: 40 15% 92%;
+  --popover: 35 8% 11%;
+  --popover-foreground: 40 15% 92%;
+  --primary: 188 35% 47%;         /* teal #4f98a3 */
+  --primary-foreground: 40 15% 96%;
+  --secondary: 35 8% 18%;
+  --secondary-foreground: 40 15% 85%;
+  --muted: 35 6% 16%;
+  --muted-foreground: 40 10% 55%;
+  --accent: 40 80% 56%;           /* amber #e8a838 */
+  --accent-foreground: 35 10% 7%;
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 40 15% 96%;
+  --border: 35 8% 20%;
+  --input: 35 8% 20%;
+  --ring: 188 35% 47%;
+  --radius: 0.5rem;
+
+  /* Chart colours */
+  --chart-1: 188 35% 47%;   /* teal */
+  --chart-2: 40 80% 56%;    /* amber */
+  --chart-3: 270 35% 55%;   /* violet */
+  --chart-4: 145 40% 50%;   /* green */
+  --chart-5: 0 65% 55%;     /* red */
+
+  /* Sector colours */
+  --sector-foundation: 188 35% 47%;
+  --sector-infra: 40 80% 56%;
+  --sector-robotics: 270 35% 55%;
+  --sector-devtools: 145 40% 50%;
+  --sector-healthcare: 0 65% 55%;
+  --sector-security: 210 60% 55%;
+  --sector-enterprise: 0 0% 55%;
+  --sector-consumer: 20 75% 58%;
+}
+
+.dark {
+  --background: 35 10% 7%;
+  --foreground: 40 15% 92%;
+  --card: 35 8% 11%;
+  --card-foreground: 40 15% 92%;
+  --popover: 35 8% 11%;
+  --popover-foreground: 40 15% 92%;
+  --primary: 188 35% 47%;
+  --primary-foreground: 40 15% 96%;
+  --secondary: 35 8% 18%;
+  --secondary-foreground: 40 15% 85%;
+  --muted: 35 6% 16%;
+  --muted-foreground: 40 10% 55%;
+  --accent: 40 80% 56%;
+  --accent-foreground: 35 10% 7%;
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 40 15% 96%;
+  --border: 35 8% 20%;
+  --input: 35 8% 20%;
+  --ring: 188 35% 47%;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Satoshi', 'Inter', sans-serif;
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-display { font-family: 'DM Serif Display', serif; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: hsl(var(--background)); }
+::-webkit-scrollbar-thumb { background: hsl(var(--border)); border-radius: 3px; }
+
+/* Stage badges */
+.badge-preSeed { background: hsl(258 35% 45% / 0.15); color: hsl(258 35% 65%); }
+.badge-seed    { background: hsl(270 35% 55% / 0.15); color: hsl(270 35% 70%); }
+.badge-seriesA { background: hsl(188 35% 47% / 0.15); color: hsl(188 35% 60%); }
+.badge-seriesB { background: hsl(40 80% 56% / 0.15); color: hsl(40 80% 65%); }
+.badge-seriesC { background: hsl(25 80% 56% / 0.15); color: hsl(25 80% 65%); }
+.badge-seriesD { background: hsl(10 75% 55% / 0.15); color: hsl(10 75% 65%); }
+.badge-seriesE { background: hsl(5 70% 50% / 0.15);  color: hsl(5 70% 65%); }
+.badge-seriesF { background: hsl(355 65% 45% / 0.15); color: hsl(355 65% 65%); }
+.badge-seriesG { background: hsl(350 60% 38% / 0.15); color: hsl(350 60% 62%); }
+.badge-growth  { background: hsl(145 50% 35% / 0.15); color: hsl(145 50% 55%); }
+.badge-mega    { background: hsl(168 55% 30% / 0.15); color: hsl(168 55% 52%); }
