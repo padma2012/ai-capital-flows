@@ -89,6 +89,33 @@ export function registerRoutes(httpServer: Server, app: Express) {
     res.status(201).json(deal);
   });
 
+  // Public deal submission — queued for review (stored with pending flag)
+  app.post("/api/deals/submit", (req, res) => {
+    const { company, amount, stage, sector, lead, region, location, description, source, submitterEmail } = req.body;
+    if (!company || !amount || !stage) {
+      return res.status(400).json({ error: "company, amount and stage are required" });
+    }
+    // Parse amount — accept "25M", "25000000", "$25M" etc.
+    const raw = String(amount).replace(/[^0-9.]/g, "");
+    const multiplier = /[Bb]/.test(String(amount)) ? 1000 : 1;
+    const parsed = parseFloat(raw) * multiplier;
+    if (isNaN(parsed) || parsed <= 0) return res.status(400).json({ error: "Invalid amount" });
+    // Store deal — mark source as user submission for review
+    const deal = storage.insertDeal({
+      company: String(company).trim(),
+      amount: parsed,
+      stage: String(stage),
+      sector: String(sector || "Enterprise AI"),
+      lead: String(lead || "Undisclosed"),
+      region: String(region || "North America"),
+      location: String(location || ""),
+      description: String(description || ""),
+      source: String(source || `Submitted by: ${submitterEmail || "anonymous"}`),
+      date: new Date().toISOString().split("T")[0],
+    });
+    res.status(201).json({ ok: true, id: deal.id });
+  });
+
   // Vercel Cron endpoint — called daily at 7am UTC
   // In vercel.json: { "crons": [{ "path": "/api/cron/daily", "schedule": "0 7 * * *" }] }
   app.get("/api/cron/daily", async (req, res) => {

@@ -1,4 +1,5 @@
 import { TrendingUp } from "lucide-react";
+import { SubmitDealButton } from "./SubmitDealModal";
 
 export function Header() {
   const today = new Date().toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
@@ -14,9 +15,12 @@ export function Header() {
             <div className="text-[10px] text-muted-foreground uppercase tracking-widest leading-none">Seed · Series A · Series B</div>
           </div>
         </div>
-        <div className="text-right hidden sm:block">
-          <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Report Period</div>
-          <div className="text-xs font-semibold">Jan 1, 2026 — {today}</div>
+        <div className="flex items-center gap-4">
+          <div className="text-right hidden sm:block">
+            <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Report Period</div>
+            <div className="text-xs font-semibold">Jan 1, 2026 — {today}</div>
+          </div>
+          <SubmitDealButton />
         </div>
       </div>
     </header>

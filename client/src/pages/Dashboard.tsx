@@ -90,7 +90,7 @@ export default function Dashboard() {
               <span className="font-semibold text-foreground text-sm">AI Capital Flows</span>
               <span className="ml-2 text-xs text-muted-foreground">Seed · Series A · Series B · Jan 1, 2026 – present</span>
             </div>
-            <span className="text-xs text-muted-foreground">Built by <span className="text-foreground font-medium">Priyanka Savjani</span></span>
+            <span className="text-xs text-muted-foreground">Built by <a href="https://linkedin.com/in/priyankasavjani" target="_blank" rel="noopener noreferrer" className="text-foreground font-medium hover:text-primary hover:underline transition-colors">Priyanka Savjani</a></span>
           </div>
           <p className="text-xs text-muted-foreground leading-relaxed max-w-3xl">
             <span className="font-medium text-foreground">Methodology:</span> Deals aggregated daily from 16 primary sources including TechCrunch, VentureBeat, BusinessWire, PR Newswire, Globe Newswire, Bloomberg Technology, Crunchbase News, EU-Startups, Tech.eu, The Information, StrictlyVC, Axios Technology, and regional wires. AI relevance and deal metadata (stage, sector, lead investor) extracted via GPT-4o. Only Seed, Series A, and Series B rounds included. Deduplication applied. Updates run automatically at 07:00 UTC daily.
