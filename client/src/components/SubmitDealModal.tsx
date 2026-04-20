@@ -58,8 +58,8 @@ function SubmitDealModal({ onClose }: { onClose: () => void }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center p-4 pt-[5vh] bg-black/60 backdrop-blur-sm overflow-y-auto" onClick={onClose}>
-      <div className="bg-card border border-border rounded-2xl w-full max-w-lg shadow-2xl mb-4" onClick={e => e.stopPropagation()}>
+    <div style={{position:"fixed",inset:0,zIndex:9999,overflowY:"auto",background:"rgba(0,0,0,0.6)"}} onClick={onClose}>
+      <div style={{margin:"40px auto",maxWidth:"520px",width:"calc(100% - 32px)",position:"relative"}} className="bg-card border border-border rounded-2xl shadow-2xl" onClick={e => e.stopPropagation()}>
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-5 border-b border-border">
           <div>
