@@ -1,10 +1,17 @@
+# Include only runtime-required node_modules
 node_modules/
 !node_modules/better-sqlite3/
 !node_modules/better-sqlite3/**
+!node_modules/rss-parser/
+!node_modules/rss-parser/**
+!node_modules/dotenv/
+!node_modules/dotenv/**
+!node_modules/supports-color/
+!node_modules/supports-color/**
 
 .vite/
 
-# SQLite WAL/temp files (keep data.db so Railway gets seeded data)
+# SQLite WAL/temp files
 data.db-shm
 data.db-wal
 data.db-journal

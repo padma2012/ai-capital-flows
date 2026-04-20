@@ -4,6 +4,8 @@ import type { Request } from 'express';
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "node:http";
+import cron from "node-cron";
+import { runPipeline } from "./pipeline";
 
 const app = express();
 const httpServer = createServer(app);
@@ -100,6 +102,20 @@ app.use((req, res, next) => {
     },
     () => {
       log(`serving on port ${port}`);
+
+      // Daily pipeline: runs every day at 7:00 AM UTC
+      if (process.env.NODE_ENV === "production") {
+        cron.schedule("0 7 * * *", async () => {
+          log("Running daily pipeline...", "cron");
+          try {
+            const result = await runPipeline();
+            log(`Pipeline done: ${result.added} new deals added`, "cron");
+          } catch (err) {
+            console.error("[cron] Pipeline error:", err);
+          }
+        });
+        log("Daily pipeline scheduled at 07:00 UTC", "cron");
+      }
     },
   );
 })();
