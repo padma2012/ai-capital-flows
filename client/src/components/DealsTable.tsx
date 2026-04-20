@@ -72,23 +72,25 @@ export function DealsTable({ deals, loading, sortKey, sortDir, onSort }: DealsTa
                 <Th col="stage" sortKey={sortKey} sortDir={sortDir} onSort={onSort}>Stage</Th>
                 <Th col="sector" sortKey={sortKey} sortDir={sortDir} onSort={onSort}>Sector</Th>
                 <th className="text-left text-[10px] uppercase tracking-wider text-muted-foreground px-3 py-3 whitespace-nowrap">Lead Investor</th>
+                <th className="text-left text-[10px] uppercase tracking-wider text-muted-foreground px-3 py-3">What They Build</th>
                 <Th col="region" sortKey={sortKey} sortDir={sortDir} onSort={onSort}>Region</Th>
                 <Th col="date" sortKey={sortKey} sortDir={sortDir} onSort={onSort}>Date</Th>
                 <Th col="valuation" sortKey={sortKey} sortDir={sortDir} onSort={onSort}>Val.</Th>
+                <th className="text-left text-[10px] uppercase tracking-wider text-muted-foreground px-3 py-3 whitespace-nowrap">Source</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 Array.from({ length: 8 }).map((_, i) => (
                   <tr key={i} className="border-t border-border">
-                    {Array.from({ length: 8 }).map((_, j) => (
+                    {Array.from({ length: 10 }).map((_, j) => (
                       <td key={j} className="px-3 py-3"><Skeleton className="h-4 w-full" /></td>
                     ))}
                   </tr>
                 ))
               ) : deals.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="text-center py-12 text-muted-foreground text-sm">No deals match the current filters</td>
+                  <td colSpan={10} className="text-center py-12 text-muted-foreground text-sm">No deals match the current filters</td>
                 </tr>
               ) : (
                 deals.map((deal) => (
@@ -108,15 +110,27 @@ export function DealsTable({ deals, loading, sortKey, sortDir, onSort }: DealsTa
                       </td>
                       <td className="px-3 py-3 text-xs text-muted-foreground">{deal.sector?.replace(" & Physical AI", "")}</td>
                       <td className="px-3 py-3 text-xs max-w-[160px] truncate text-muted-foreground">{deal.lead}</td>
+                      <td className="px-3 py-3 text-xs text-muted-foreground max-w-[260px]">
+                        <span className="line-clamp-2 leading-relaxed">{deal.description || "—"}</span>
+                      </td>
                       <td className="px-3 py-3 text-xs text-muted-foreground whitespace-nowrap">{REGION_FLAG[deal.region || ""] || "🌐"} {deal.location}</td>
                       <td className="px-3 py-3 text-xs text-muted-foreground whitespace-nowrap">
                         {new Date(deal.date).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
                       </td>
                       <td className="px-3 py-3 text-xs text-muted-foreground">{deal.valuation ? `$${(deal.valuation / 1000).toFixed(1)}B` : "—"}</td>
+                      <td className="px-3 py-3 text-xs">
+                        {deal.source ? (
+                          <a href={deal.source} target="_blank" rel="noopener noreferrer"
+                            className="flex items-center gap-1 text-primary hover:underline whitespace-nowrap"
+                            onClick={(e) => e.stopPropagation()}>
+                            <ExternalLink className="w-3 h-3" /> View
+                          </a>
+                        ) : "—"}
+                      </td>
                     </tr>
                     {expanded === deal.id && (
                       <tr key={`expand-${deal.id}`} className="border-t border-border bg-card/40">
-                        <td colSpan={8} className="px-4 py-3">
+                        <td colSpan={10} className="px-4 py-3">
                           <div className="flex items-start justify-between gap-4">
                             <p className="text-xs text-muted-foreground leading-relaxed max-w-2xl">
                               {deal.description || "No description available."}

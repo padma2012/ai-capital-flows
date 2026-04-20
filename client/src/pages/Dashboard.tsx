@@ -83,13 +83,18 @@ export default function Dashboard() {
         <SectorCards stats={stats} filtered={filtered} loading={statsLoading} />
         <PipelineStatus />
       </main>
-      <footer className="border-t border-border mt-16 py-8 px-6">
-        <div className="max-w-[1400px] mx-auto flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-xs text-muted-foreground">
-          <div>
-            <span className="font-semibold text-foreground">AI Capital Flows</span>
-            <span className="ml-2">Seed · Series A · Series B · Jan 1 – present</span>
+      <footer className="border-t border-border mt-16 py-10 px-6 bg-card/30">
+        <div className="max-w-[1400px] mx-auto space-y-4">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+            <div>
+              <span className="font-semibold text-foreground text-sm">AI Capital Flows</span>
+              <span className="ml-2 text-xs text-muted-foreground">Seed · Series A · Series B · Jan 1, 2026 – present</span>
+            </div>
+            <span className="text-xs text-muted-foreground">Built by <span className="text-foreground font-medium">Priyanka Savjani</span></span>
           </div>
-          <span>Sources: TechCrunch, BusinessWire, VentureBeat, Bloomberg, Fortune, Crunchbase, company PRs · Updates daily at 07:00 UTC · Coverage note: ~80% US-focused; international deals may lag</span>
+          <p className="text-xs text-muted-foreground leading-relaxed max-w-3xl">
+            <span className="font-medium text-foreground">Methodology:</span> Deals aggregated daily from 16 primary sources including TechCrunch, VentureBeat, BusinessWire, PR Newswire, Globe Newswire, Bloomberg Technology, Crunchbase News, EU-Startups, Tech.eu, The Information, StrictlyVC, Axios Technology, and regional wires. AI relevance and deal metadata (stage, sector, lead investor) extracted via GPT-4o. Only Seed, Series A, and Series B rounds included. Deduplication applied. Updates run automatically at 07:00 UTC daily.
+          </p>
         </div>
       </footer>
     </div>
