@@ -6,8 +6,8 @@ import { insertDealSchema } from "@shared/schema";
 import { Resend } from "resend";
 import { randomBytes } from "crypto";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
 const ADMIN_EMAIL = "savjanipriyanka@gmail.com";
+function getResend() { return new Resend(process.env.RESEND_API_KEY || "no-key"); }
 
 export function registerRoutes(httpServer: Server, app: Express) {
   // GET /api/deals — list with optional filters
@@ -126,7 +126,7 @@ export function registerRoutes(httpServer: Server, app: Express) {
     const rejectUrl = `${baseUrl}/api/deals/reject?token=${token}`;
     const amountStr = parsedAmount >= 1000 ? `$${(parsedAmount/1000).toFixed(1)}B` : `$${parsedAmount}M`;
 
-    await resend.emails.send({
+    await getResend().emails.send({
       from: "AI Capital Flows <onboarding@resend.dev>",
       to: ADMIN_EMAIL,
       subject: `New deal submission: ${company} (${amountStr} ${stage})`,
