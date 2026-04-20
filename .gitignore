@@ -1,5 +1,5 @@
 node_modules/
-dist/
+
 .vite/
 
 # SQLite WAL/temp files (keep data.db so Railway gets seeded data)
