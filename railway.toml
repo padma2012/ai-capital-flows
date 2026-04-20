@@ -1,6 +1,5 @@
 [build]
-builder = "nixpacks"
-buildCommand = "npm install --ignore-scripts --omit=dev"
+builder = "dockerfile"
 
 [deploy]
 startCommand = "node dist/index.cjs"
