@@ -27,8 +27,7 @@ export function HeroSection({ stats, loading }: { stats?: Stats; loading: boolea
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-14 sm:py-20">
         <p className="text-xs uppercase tracking-[0.2em] text-primary mb-4">VC Intelligence Report</p>
         <h1 className="font-display text-4xl sm:text-6xl font-normal leading-tight mb-4">
-          Where the Smart Money<br />
-          <em className="text-primary not-italic">Moved This Year</em>
+          Where the Smart Money<br /><em className="text-primary not-italic">Moved This Quarter</em>
         </h1>
         <p className="text-muted-foreground text-base sm:text-lg mb-10 max-w-xl">
           {loading ? "Loading..." : `${stats?.totalDeals ?? "—"} AI companies · $${totalB}B+ raised · Updated daily`}
