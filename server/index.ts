@@ -109,7 +109,7 @@ app.use((req, res, next) => {
           log("Running daily pipeline...", "cron");
           try {
             const result = await runPipeline();
-            log(`Pipeline done: ${result.added} new deals added`, "cron");
+            log(`Pipeline done: ${result.dealsAdded} new deals added`, "cron");
           } catch (err) {
             console.error("[cron] Pipeline error:", err);
           }
