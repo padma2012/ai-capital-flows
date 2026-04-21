@@ -59,6 +59,27 @@ const RSS_FEEDS = [
   // Specialist AI publications
   { name: "The Batch (DeepLearning.AI)", url: "https://www.deeplearning.ai/the-batch/feed/" },
   { name: "Import AI",            url: "https://importai.substack.com/feed" },
+
+  // TechCrunch stage-specific feeds — catch deals that miss the main feed
+  { name: "TechCrunch Series A",  url: "https://techcrunch.com/tag/series-a/feed/" },
+  { name: "TechCrunch Series B",  url: "https://techcrunch.com/tag/series-b/feed/" },
+
+  // SEC EDGAR Form D filings — official regulatory filings for all US fundraises
+  { name: "SEC EDGAR Form D",     url: "https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=D&dateb=&owner=include&count=40&output=atom" },
+
+  // European & UK coverage
+  { name: "Sifted (Europe)",      url: "https://sifted.eu/feed" },
+  { name: "UK Tech News",         url: "https://www.uktech.news/feed" },
+  { name: "TechRound (UK)",       url: "https://techround.co.uk/feed/" },
+
+  // Additional PR wire — financial services category catches fintech/healthtech AI
+  { name: "PR Newswire FinServ",  url: "https://www.prnewswire.com/rss/news-releases-list.rss?category=financial-services-industry" },
+
+  // Maginative — AI-focused news
+  { name: "Maginative",           url: "https://maginative.com/feed/" },
+
+  // SaaStr — strong B2B SaaS/AI funding coverage
+  { name: "SaaStr",               url: "https://www.saastr.com/feed/" },
 ];
 
 // ─── Keyword Filters ──────────────────────────────────────────────────────────
