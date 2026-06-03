@@ -2,7 +2,7 @@
 
 **An AI-powered dashboard that tracks and summarizes capital-flow signals — funding rounds, investments, and money movement — by automatically aggregating news and data sources and using AI to surface the trends that matter.**
 
-🔗 **Live demo:** [ai-capital-flows.vercel.app](https://ai-capital-flows.vercel.app)
+🔗 **Live demo:** https://aicapitalflows.com/#/
 
 <!-- Tip: a single screenshot or GIF of the dashboard here makes the biggest difference for a non-technical reader. Drop an image in the repo and uncomment the line below.
 ![Dashboard screenshot](docs/screenshot.png)
