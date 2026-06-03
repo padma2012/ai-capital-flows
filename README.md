@@ -7,6 +7,7 @@
 <!-- Tip: a single screenshot or GIF of the dashboard here makes the biggest difference for a non-technical reader. Drop an image in the repo and uncomment the line below.
 ![Dashboard screenshot](docs/screenshot.png)
 -->
+<img width="2914" height="1580" alt="image" src="https://github.com/user-attachments/assets/c3a9e382-e30c-49d9-a6f8-40a9e5de5743" />
 
 ---
 
