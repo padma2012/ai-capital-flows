@@ -12,7 +12,7 @@
 
 ## What it does
 
-AI Capital Flows continuously pulls in data from news feeds and the web on a schedule, uses AI to analyze and summarize what's happening, and presents the results as an interactive dashboard with charts and trend views. Users can sign in, explore the data, and receive updates by email.
+AI Capital Flows continuously pulls in data from news feeds and the web on a schedule daily at 7am, uses AI to analyze and summarize what's happening, and presents the results as an interactive dashboard with charts and trend views. Users can sign in, explore the data, and submit new deals by email.
 
 <!-- Verify/adjust this paragraph so it matches exactly what you track and who it's for.
      e.g. "...tracks venture funding rounds across X sectors..." or "...monitors capital flows in public markets..." -->
